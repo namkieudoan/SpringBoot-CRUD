@@ -1,6 +1,7 @@
 package com.example.demoJpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.Repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,9 @@ public class userController {
     @Autowired
     userRepository userRepository;
     @GetMapping()
-    public List<User> getAllUser(){
+    public ResponseEntity getAllUser(){
         List<User> listUser = userRepository.findAll();
-        return listUser;
+        return ResponseEntity.ok().body(listUser);
     }
     @GetMapping("/{id}")
     public User getUserById(@PathVariable(name = "id") Integer id ){
@@ -44,4 +45,12 @@ public class userController {
         userRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
+    //sort
+    @GetMapping("/sort-name={field}")
+    public ResponseEntity getUserWithSort(@PathVariable(name = "field") String field){
+        List<User> allUsers = userRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+        return ResponseEntity.ok().body(allUsers);
+    }
+
 }
